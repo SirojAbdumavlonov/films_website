@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Website</title>
+  <link rel="stylesheet" type="text/css" th:href="@{mainPage.css}" href="mainPage.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+
+<div class="container" >
+  <div class="texts">
+    <div class="text">
+        <h4>FULL NAME</h4>
+        <h4 th:text="${loggedUser.fullname}"></h4>
+    </div>
+    <div class="text">
+      <h4><b>EMAIL</b></h4>
+      <h4 th:text="${loggedUser.email}"></h4>
+    </div>
+  </div>
+  <h3 style="align-items: center;text-align: center">SAVED FILMS</h3>
+  <div class="card mb-3" style="max-width: 740px;margin: 20px" th:each="movie:${userSavedMovies}">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <a th:href="@{/{id}/movie(id=${movie.getMovieId()})}" class="current_left">
+          <img th:src="@{'/img/' + ${movie.nameOfImage}}"  alt="" style="width: 100%;height: 100%">
+        </a>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="cards-title" th:text="${movie.getFilm_name()}"></h5>
+          <p class="card-text" th:text="${movie.getFilm_info()}"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
+
+

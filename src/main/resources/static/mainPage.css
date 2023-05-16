@@ -1,0 +1,118 @@
+.container {
+    width: 80vw;
+    height: fit-content;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+.header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: silver;
+    width: 98%;
+    height: 30%;
+    margin: 15px auto;
+    border-radius: 10px 0 10px 10px;
+    font-family:"Arial Nova";
+    font-style: Italic;
+    color: blanchedalmond;
+
+
+}
+.ul{
+    display: flex;
+    font-size: 20px;
+    list-style-type: none;
+    justify-content: space-between;
+    width: 40%;
+    color: white;
+}
+.header_in{
+    display: flex;
+    flex-direction: row;
+    align-items:start;
+    justify-content: left;
+    background-color: silver;
+    width: 98%;
+    height: 30%;
+    margin: 10px auto;
+    border-radius: 10px 0 10px 10px;
+    border: 3px solid lavender;
+
+}
+.header_item{
+    width: 124px;
+    height: 180px;
+    display: block;
+    background-color: white;
+    margin:  0 5px;
+}
+.body_part{
+    height: 100%;
+    background-color: green;
+    width: 98%;
+    margin: 15px auto;
+    border-radius:10px;
+    display: flex;
+    flex-direction: row;
+justify-content: space-around;
+/* align-items: center; */
+align-items: start;
+padding:  10px ;
+}
+
+.update{
+    width: 30%;
+    height: 95%;
+    background-color: rgb(255, 123, 123);
+    display: flex;flex-direction: column;
+}
+.last_news{
+    width: 97%;
+    height: 90px;
+    background-color: gray;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.last1{
+    width: 33%;
+    background-color: white;
+}
+.last2{
+    width: 33%;
+    background-color: white;
+
+}
+.last3{
+    width: 33%;
+    background-color: white;
+
+}
+
+.current{
+    width: 68%;
+    background-color: royalblue;
+    height: 95%;
+}
+.current_ad{
+    height: 45vh;
+    background-color: gray;
+    margin: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.current_left{
+    width: 30%;
+    background-color: white;
+    height: 98%;
+}
+.current_right{
+    width: 67%;
+    height: 98%;
+    background-color: white;
+}
