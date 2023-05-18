@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:https="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="default">>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="mainPage.css" type="text/css" th:href="@{mainPage.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+</head>
+<body>
+    <div class="header" >
+        <ul class="ul">
+            <li><a href="/">Home</a></li>
+            <li><a href="/add_movie">Add</a></li>
+            <li><a href="">About</a></li>
+            <li><a th:if="${loggedUser == null}" href="/reg">Sign up/Login</a></li>
+            <li><a th:unless="${loggedUser == null}" th:text="${loggedUser.fullname}" th:href="@{/user/u/{id}(id=${loggedUser.getUserId()})}"></a></li>
+
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <form method="post" th:if="${loggedUser != null}" th:action="@{'/user/logout?userId='+${loggedUser.getUserId()}}">
+                <button  class="btn btn-secondary" type="submit">Log out</button>
+            </form>
+        </ul>
+    </div>
+    <div class="container">
+        <p style="text-align: center;"><b>HITS</b></p>
+        <div class="header_in">
+            <div class="header_item" th:each="im:${newfilms}">
+                <a th:href="@{/{id}/movie(id=${im.getMovieId()})}" class="current_left">
+                    <img alt="" th:src="@{'img/' + ${im.nameOfImage}}" width="124px" height="180px">
+                </a>
+            </div>
+        </div>
+        <div class="body_part">
+            <div class="update">
+                <div class="last_news">
+                    <div class="last1"></div>
+                    <div class="last2"></div>
+                    <div class="last3"></div>
+                </div>
+            </div>
+<!--            <th:block th:if="${session.msg}">-->
+<!--                <p class="text-center fs-4 text-success">[[${session.msg}]]</p>-->
+<!--                <th:block th:text="${#session.removeAttribute('msg')}"></th:block>-->
+<!--            </th:block>-->
+            <div class="current">
+                <div class="current_ad" th:each="im:${films}" >
+                    <a th:href="@{/{id}/movie(id=${im.getMovieId()})}" class="current_left">
+                        <img alt="" th:src="@{'img/' + ${im.nameOfImage}}" style="height: 340px; width: 252px">
+                    </a>
+                    <div class="current_right">
+                        <p><b th:text="*{im.getFilm_name()}"></b>(<b th:text="*{im.getRelease()}"></b>)</p>
+                        <br>
+                        <p  th:text="*{im.getFilm_info()}">
+                        </p>
+                        <p th:if="*{im.getFilm_grade() > 5}">Film grade:<p th:text="*{im.getFilm_grade()}"></p>
+                        <button th:id="like">
+                                like</button>
+                        <span id="likeCount" th:text="*{im.getLikes()}">0</span>
+                        <button  th:id="dislike"  >
+                                dislike</button>
+                        <span id="dislikeCount" th:text="${im.getDislikes()}">0</span>
+
+                        <form th:if="${loggedUser != null}"  method="post" th:action="@{'/film/cart?userId='+${loggedUser.getUserId()}+'&movieId='+${im.getMovieId()}}">
+                            <button type="submit" >save</button>
+                        </form>
+
+                        <form th:if="${loggedUser == null}">
+                            <button type="button" id="saveButtonDisabled"  class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="register to save">
+                                save
+                            </button>
+                        </form>
+                        <div th:if="${session.containsKey('added')}">
+                            <div class="alert alert-success" role="alert" th:text="${session.added}"></div>
+                        </div>
+                        <div th:unless="${session.containsKey('added')}">
+                        <div class="alert alert-success" role="alert" th:text="${session.removed}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="" th:src="@{/reviews.js}"> </script>
+</body>
+</html>
