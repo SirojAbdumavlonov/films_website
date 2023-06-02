@@ -1,4 +1,5 @@
 Website has been done using Spring Framework for server-side backend, Spring Data JPA to interact with MySQL DB and Thymeleaf with HTML/CSS for frontend.
+
 Main features:
 1. Watch movie only by searching for its name
 2. Own page of user after registering 
