@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SavedMoviesServiceImpl implements SavedMoviesService{
@@ -54,10 +55,10 @@ public class SavedMoviesServiceImpl implements SavedMoviesService{
     }
     public SavedMovie saveThisMovie(int userId, int movieId){
         Film film = filmRepository.findByMovieId(movieId);
-        User user = userRepository.findByUserId(userId);
+        Optional<User> user = userRepository.findByUserId(userId);
        return SavedMovie.builder()
                         .film(film)
-                        .user(user)
+                        .user(user.get())
                         .build();
 
     }

@@ -3,10 +3,13 @@ package com.example.backend_prj.service;
 import com.example.backend_prj.entity.ExpirationToken;
 import com.example.backend_prj.entity.User;
 import com.example.backend_prj.entity.Userdt;
+import com.example.backend_prj.exception.UserAlreadyExistException;
 import com.example.backend_prj.repository.ExpirationTokenRepository;
 import com.example.backend_prj.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,10 +35,10 @@ public class UserServiceImpl implements UserService {
         return expirationTokenRepository.save(expirationToken);
     }
 
-    public User findByUserByEmailAndPassword(String email, String password){
+    public Optional<User> findByUserByEmailAndPassword(String email, String password){
         return userRepository.findByEmailAndPassword(email, password);
     }
-    public User findById(int id){
+    public Optional<User> findById(int id){
         return userRepository.findByUserId(id);
     }
 
@@ -49,5 +52,8 @@ public class UserServiceImpl implements UserService {
     public int findTokenId(int userId){
         ExpirationToken expirationToken = expirationTokenRepository.findByUserId(userId);
         return expirationToken.getTokenId();
+    }
+    public Optional<User> findUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 }

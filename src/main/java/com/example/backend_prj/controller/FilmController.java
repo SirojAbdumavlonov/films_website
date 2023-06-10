@@ -1,6 +1,7 @@
 package com.example.backend_prj.controller;
 
 import com.example.backend_prj.entity.*;
+import com.example.backend_prj.exception.UserAlreadyExistException;
 import com.example.backend_prj.repository.ExpirationTokenRepository;
 import com.example.backend_prj.service.SavedMoviesServiceImpl;
 import com.example.backend_prj.utils.JsonFile;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.Binding;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -67,6 +71,8 @@ public class FilmController {
              return "mainPage";
         }
 
+
+
         Calendar calendar = Calendar.getInstance();
         System.out.println(expirationToken.getExpirationTime().getTime() - calendar.getTime().getTime());
 
@@ -77,7 +83,7 @@ public class FilmController {
             model.addAttribute("loggedUser",null);
              return "mainPage";
         }
-        System.out.println("Logged user = " + userService.findById(id).getFullname());
+        System.out.println("Logged user = " + userService.findById(id).get().getFullname());
         model.addAttribute("loggedUser", userService.findById(id));
         model.addAttribute("allSavedMovies", savedMoviesService.savedMoviesOfUser(id));
         expirationTokenRepository.tokenLoggedToOne(id);
@@ -130,16 +136,20 @@ public class FilmController {
         return "registration";
     }
     @PostMapping("/usereg")
-    public String userReg(@ModelAttribute User user, Model model){
+    public String userReg(@ModelAttribute User user, Model model, BindingResult bindingResult){
 
-        if(userService.findById(user.getUserId()) == null) {
-            userService.saveUser(user, new ExpirationToken(user));
-            model.addAttribute("exUser",new ExpirationToken(user));
-            JsonFile.writeTo(user.getUserId(),JsonFile.JSONFILENAME);
-            return "redirect:/";
+        if(userService.findUserByEmail(user.getEmail()).isPresent()){
+            model.addAttribute("userHas","User with this email already exists");
+            JsonFile.noOneLogged(JsonFile.JSONFILENAME);
+            throw new UserAlreadyExistException("User with this email has already been registered");
         }
-        JsonFile.noOneLogged(JsonFile.JSONFILENAME);
-        return "redirect:/reg";
+
+        userService.saveUser(user, new ExpirationToken(user));
+        model.addAttribute("exUser",new ExpirationToken(user));
+        JsonFile.writeTo(user.getUserId(),JsonFile.JSONFILENAME);
+
+
+        return "redirect:/";
     }
     ///end registration
 
@@ -151,14 +161,14 @@ public class FilmController {
     @PostMapping("/userlog")
     public String loggingIn(@ModelAttribute User user){
         try {
-            User existIfUser = userService.findByUserByEmailAndPassword(user.getEmail(), user.getPassword());
-            if (existIfUser == null) {
+            Optional<User> existIfUser = userService.findByUserByEmailAndPassword(user.getEmail(), user.getPassword());
+            if (existIfUser.isEmpty()) {
                 JsonFile.noOneLogged(JsonFile.JSONFILENAME);
                 return "redirect:/logging";
             }
-            userService.deleteAndCreateNewTokenWhenLoggingIn(userService.findTokenId(existIfUser.getUserId()),new ExpirationToken(existIfUser));
-            expirationTokenRepository.tokenLoggedToOne(existIfUser.getUserId());
-            JsonFile.writeTo(existIfUser.getUserId(), JsonFile.JSONFILENAME);
+            userService.deleteAndCreateNewTokenWhenLoggingIn(userService.findTokenId(existIfUser.get().getUserId()),new ExpirationToken(existIfUser.get()));
+            expirationTokenRepository.tokenLoggedToOne(existIfUser.get().getUserId());
+            JsonFile.writeTo(existIfUser.get().getUserId(), JsonFile.JSONFILENAME);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
